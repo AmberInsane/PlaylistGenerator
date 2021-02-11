@@ -1,0 +1,26 @@
+package com.amber.insane.menu;
+
+import com.amber.insane.Item;
+
+public enum MenuItem implements Item {
+    SHOW_MENU("Show menu"),
+    SORT_PLAYLIST("Create playlist from sored folders"),
+    SORT_FOLDERS("Sort music files to music type folders"),
+    EXIT("Exit");
+
+    String name;
+
+    MenuItem(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public Item[] getValues() {
+        return values();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+}
