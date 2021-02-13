@@ -4,21 +4,20 @@ import com.amber.insane.sorters.OrderStrategy;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class FilesManager {
-    private final String ROOT_FOLDER_PATH;
     private final String MUSIC_FOLDER_PATH;
 
     private final static String MUSIC_DIR_NAME = "Music";
     private final static String MUSIC_LIST_FILE_NAME = "Music list.txt";
 
-    private Map<MusicType, List<File>> audioFiles;
-    private List<File> audioList;
+    private Map<MusicType, List<MusicFile>> audioFiles;
+    private List<MusicFile> audioList;
     private File listFile;
 
     public FilesManager(String rootFolderPath) {
-        this.ROOT_FOLDER_PATH = rootFolderPath;
         this.MUSIC_FOLDER_PATH = rootFolderPath + "/" + MUSIC_DIR_NAME;
         this.listFile = new File(rootFolderPath + "/" + MUSIC_LIST_FILE_NAME);
     }
@@ -47,7 +46,7 @@ public class FilesManager {
         }
     }
 
-    private void createCategoriesFolders() throws IOException {
+    private void createCategoriesFolders() {
         for (MusicType value : MusicType.values()) {
             File dir = new File(MUSIC_FOLDER_PATH + value.folderPath);
             if (dir.exists()) {
@@ -63,15 +62,18 @@ public class FilesManager {
         }
     }
 
-    private List<File> sortFiles(OrderStrategy orderStrategy, Map<MusicType, List<File>> audioFiles) {
+    private List<MusicFile> sortFiles(OrderStrategy orderStrategy, Map<MusicType, List<MusicFile>> audioFiles) {
         return orderStrategy.getSorter().sortFiles(audioFiles);
     }
 
-    private void initAudioFiles() throws Exception {
+    private void initAudioFiles() {
         audioFiles = new HashMap<>();
         for (MusicType musicType : MusicType.values()) {
             File musicFolder = new File(MUSIC_FOLDER_PATH + musicType.folderPath);
-            List<File> folderAudios = new ArrayList<>(Arrays.asList(Objects.requireNonNull(musicFolder.listFiles())));
+            List<File> folderFiles = new ArrayList<>(Arrays.asList(Objects.requireNonNull(musicFolder.listFiles())));
+
+            List<MusicFile> folderAudios = folderFiles.stream().map(MusicFile::new).collect(Collectors.toList());
+
             audioFiles.put(musicType, folderAudios);
         }
     }

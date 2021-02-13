@@ -6,7 +6,7 @@ import com.amber.insane.sorters.OrderStrategy;
 
 import java.util.*;
 
-import static com.amber.insane.menu.MenuItem.SHOW_MENU;
+import static com.amber.insane.menu.MenuItem.*;
 
 public class MenuController {
     private static final String ERROR_MESSAGE = "Incorrect number of command, try again";
@@ -23,7 +23,7 @@ public class MenuController {
         MenuItem menuItem = SHOW_MENU;
 
         System.out.println("Let's do something");
-        while (menuItem != MenuItem.EXIT) {
+        while (menuItem != EXIT) {
             menuItem = (MenuItem) getItem(MenuItem.values());
             commandAction(menuItem);
         }
@@ -89,7 +89,6 @@ public class MenuController {
 
     private void sortPlaylist() throws Exception {
         OrderStrategy strategy = (OrderStrategy) getItem(OrderStrategy.values());
-
         filesManager.sortPlaylist(strategy);
     }
 }

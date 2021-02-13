@@ -15,11 +15,6 @@ public enum MenuItem implements Item {
     }
 
     @Override
-    public Item[] getValues() {
-        return values();
-    }
-
-    @Override
     public String getName() {
         return this.name;
     }

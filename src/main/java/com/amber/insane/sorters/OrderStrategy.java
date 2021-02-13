@@ -27,11 +27,6 @@ public enum OrderStrategy implements Item {
     public abstract ISorter getSorter();
 
     @Override
-    public Item[] getValues() {
-        return values();
-    }
-
-    @Override
     public String getName() {
         return this.name;
     }

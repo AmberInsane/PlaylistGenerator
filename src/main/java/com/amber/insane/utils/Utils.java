@@ -1,7 +1,5 @@
-package com.amber.insane;
+package com.amber.insane.utils;
 
-import it.sauronsoftware.jave.Encoder;
-import it.sauronsoftware.jave.MultimediaInfo;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -9,21 +7,11 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
-
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
 public class Utils {
-    // private final Logger logger = LogManager.getLogger(Utils.class.getName());
-
-    public static int getArrayIndex(int arraySize) {
+    public static int getRandomArrayIndex(int arraySize) {
         return (int) (arraySize * Math.random());
     }
 
@@ -37,4 +25,6 @@ public class Utils {
         }
         return duration;
     }
+
+
 }

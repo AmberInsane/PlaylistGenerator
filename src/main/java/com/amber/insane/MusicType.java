@@ -1,18 +1,6 @@
 package com.amber.insane;
 
 public enum MusicType {
-    RELAX("/Relax") {
-        @Override
-        MusicType getNext() {
-            return JOURNEY;
-        }
-    },
-    MEDIUM ("/Medium") {
-        @Override
-        MusicType getNext() {
-            return RELAX;
-        }
-    },
     JOURNEY("/Journey") {
         @Override
         MusicType getNext() {
@@ -23,6 +11,18 @@ public enum MusicType {
         @Override
         MusicType getNext() {
             return MEDIUM;
+        }
+    },
+    MEDIUM ("/Medium") {
+        @Override
+        MusicType getNext() {
+            return RELAX;
+        }
+    },
+    RELAX("/Relax") {
+        @Override
+        MusicType getNext() {
+            return JOURNEY;
         }
     };
 
