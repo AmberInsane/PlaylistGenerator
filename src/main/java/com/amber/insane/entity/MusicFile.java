@@ -1,4 +1,4 @@
-package com.amber.insane;
+package com.amber.insane.entity;
 
 import com.amber.insane.utils.Utils;
 import lombok.Getter;

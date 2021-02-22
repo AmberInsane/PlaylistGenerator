@@ -14,13 +14,29 @@ public class MatrixUtils {
         return matrix;
     }
 
-    public static void printMatrix(long[][] matrix) {
-        for (long[] aMatrix : matrix) {
-            for (long anAMatrix : aMatrix) {
-                System.out.printf("%6d", anAMatrix);
-            }
-            System.out.println();
+    private static String getArrayPrint(long[] array) {
+        StringBuilder sb= new StringBuilder();
+
+        for (long arrayOfDuration : array) {
+            sb.append(String.format("%6d", arrayOfDuration));
         }
 
+        return sb.toString();
+    }
+
+    private static String getMatrixPrint(long[][] matrix) {
+        StringBuilder sb= new StringBuilder();
+
+        for (long[] aMatrix : matrix) {
+            for (long anAMatrix : aMatrix) {
+                sb.append(String.format("%6d", anAMatrix));
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static String getTablePrint(long[] columnNames, long[][] matrix) {
+        return getArrayPrint(columnNames) + "\n" + getMatrixPrint(matrix);
     }
 }

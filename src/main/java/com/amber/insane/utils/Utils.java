@@ -9,6 +9,9 @@ import org.jaudiotagger.tag.TagException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Utils {
     public static int getRandomArrayIndex(int arraySize) {
@@ -26,5 +29,13 @@ public class Utils {
         return duration;
     }
 
+    public static boolean isValidPath(String pathName) {
+        try {
+            Path path = Paths.get(pathName);
+            return path.getRoot() != null;
+        } catch (InvalidPathException | NullPointerException ex) {
+            return false;
+        }
+    }
 
 }

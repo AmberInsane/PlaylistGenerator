@@ -1,6 +1,4 @@
-package com.amber.insane.menu;
-
-import com.amber.insane.Item;
+package com.amber.insane.enums;
 
 public enum MenuItem implements Item {
     SHOW_MENU("Show menu"),

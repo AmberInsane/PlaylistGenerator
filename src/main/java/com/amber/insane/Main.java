@@ -1,11 +1,10 @@
 package com.amber.insane;
 
-import com.amber.insane.menu.MenuController;
+import com.amber.insane.controller.MenuController;
 
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
+
+import static com.amber.insane.utils.Utils.isValidPath;
 
 public class Main {
 
@@ -21,15 +20,5 @@ public class Main {
         } else {
             System.err.println("Incorrect path");
         }
-    }
-
-    private static boolean isValidPath(String pathName) {
-        try {
-            Path path = Paths.get(pathName);
-            return path.getRoot() != null;
-        } catch (InvalidPathException | NullPointerException ex) {
-            return false;
-        }
-
     }
 }

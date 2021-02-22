@@ -1,23 +1,32 @@
-package com.amber.insane.sorters;
+package com.amber.insane.service.sorters;
 
-import com.amber.insane.MusicFile;
-import com.amber.insane.MusicType;
+import com.amber.insane.entity.MusicFile;
+import com.amber.insane.enums.MusicType;
+import com.amber.insane.exceptions.SorterException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-import static com.amber.insane.utils.MatrixUtils.createBackpackMatrix;
-import static com.amber.insane.utils.MatrixUtils.printMatrix;
+import static com.amber.insane.utils.MatrixUtils.*;
 
 public class SmartSorter implements ISorter {
     private static int SET_LENGTH = 20; //20 minutes
     private static int MATRIX_STEP = 10; //10 seconds
+
+    private final Logger logger = LogManager.getLogger(SmartSorter.class);
 
     @Override
     public List<MusicFile> sortFiles(Map<MusicType, List<MusicFile>> audioFiles) {
         List<MusicFile> playlist = new ArrayList<>();
 
         int setsNumber = calculateSetsNumber(audioFiles);
-        System.out.println(setsNumber);
+
+        if (setsNumber == 0) {
+            throw new SorterException(String.format("Playlist is too short to be generated. " +
+                    "Minimum length of the set is %d seconds", SET_LENGTH * 60));
+        }
+        logger.info("Sets number is " + setsNumber);
 
         audioFiles.values().forEach(list -> list.sort(new MusicFile.MusicFileDurationComparator()));
 
@@ -31,10 +40,12 @@ public class SmartSorter implements ISorter {
                     long commonDuration = musicFiles.stream().mapToLong(MusicFile::getDuration).sum();
                     long setDuration = commonDuration / setsNumber;
 
-                    System.out.println("musicType " + musicType);
-                    List<MusicFile> musicFiles1 = extractSublist(musicFiles, setDuration);
+                    logger.info("musicType " + musicType);
+                    logger.info("maxSetDuration " + setDuration);
 
-                    playlist.addAll(musicFiles1);
+                    List<MusicFile> musicFilesSorted = extractSublist(musicFiles, setDuration);
+
+                    playlist.addAll(musicFilesSorted);
                 } else {
                     playlist.addAll(musicFiles);//for 1 just take all leftovers
                 }
@@ -47,8 +58,6 @@ public class SmartSorter implements ISorter {
     }
 
     private List<MusicFile> extractSublist(List<MusicFile> musicFiles, long maxSetDuration) {
-        System.out.println("maxSetDuration " + maxSetDuration);
-
         long[] arrayOfDurations = createAndFillArrayOfDurations(musicFiles.get(0).getDuration(), maxSetDuration);
 
         long[][] dynamicMatrix = createAndFillBackpackMatrix(musicFiles, arrayOfDurations);
@@ -61,7 +70,6 @@ public class SmartSorter implements ISorter {
 
         int currentColumnIndex = arrayOfDurations.length - 1;
 
-
         int currentMaxIndex = dynamicMatrix.length - 1;
 
         long leftDuration = dynamicMatrix[currentMaxIndex][currentColumnIndex];
@@ -71,7 +79,7 @@ public class SmartSorter implements ISorter {
             int lastRowIndex = currentMaxIndex;
             long currentMax = -1;
 
-            System.out.println(currentMaxIndex + " " + currentMax + " " + currentColumnIndex);
+            logger.debug(currentMaxIndex + " " + currentMax + " " + currentColumnIndex);
 
             for (int i = 0; i < lastRowIndex; i++) {
                 long curElem = dynamicMatrix[i][currentColumnIndex];
@@ -88,7 +96,7 @@ public class SmartSorter implements ISorter {
 
             if (leftDuration >= 0) {
                 currentColumnIndex = (int) ((float) (leftDuration - firstColumnDuration) / MATRIX_STEP);
-                System.out.println("selected " + selectedFile.getName() + " " + selectedFile.getDuration() +" left " + leftDuration);
+                logger.info("selected " + selectedFile.getName() + " " + selectedFile.getDuration() + " left " + leftDuration);
 
                 music.add(selectedFile);
             }
@@ -128,9 +136,8 @@ public class SmartSorter implements ISorter {
                     long leftDuration = maxDuration - currentDuration;
 
                     if (leftDuration > firstColumnDuration) {
-                       // int prevColumnNum = (int) Math.ceil(((float)(leftDuration - firstColumnDuration)) / MATRIX_STEP);
-                        int prevColumnNum = (int) ((float)(leftDuration - firstColumnDuration)) / MATRIX_STEP;
-                        //System.out.println("currentDuration " + currentDuration + " leftDuration " + leftDuration + " prevColumnNum " + prevColumnNum + " value " + arrayOfDurations[prevColumnNum]);
+                        int prevColumnNum = (int) ((float) (leftDuration - firstColumnDuration)) / MATRIX_STEP;
+                        logger.debug("currentDuration " + currentDuration + " leftDuration " + leftDuration + " prevColumnNum " + prevColumnNum + " value " + arrayOfDurations[prevColumnNum]);
                         long prevMax = -1;
 
                         for (int k = 0; k < i; k++) {
@@ -147,11 +154,7 @@ public class SmartSorter implements ISorter {
             }
         }
 
-        for (long arrayOfDuration : arrayOfDurations) {
-            System.out.printf("%6d", arrayOfDuration);
-        }
-        System.out.println();
-        printMatrix(dynamicMatrix);
+        logger.debug(getTablePrint(arrayOfDurations, dynamicMatrix));
 
         return dynamicMatrix;
     }
@@ -174,7 +177,7 @@ public class SmartSorter implements ISorter {
                 .min(Long::compareTo);
 
         if (minMusicTypeDuration.isPresent()) {
-            numberOfSets = (int) Math.ceil((float) minMusicTypeDuration.get() / 60 / SET_LENGTH);
+            numberOfSets = (int) ((float) minMusicTypeDuration.get() / 60 / SET_LENGTH);
         }
         return numberOfSets;
     }

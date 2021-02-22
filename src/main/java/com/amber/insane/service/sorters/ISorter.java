@@ -1,7 +1,7 @@
-package com.amber.insane.sorters;
+package com.amber.insane.service.sorters;
 
-import com.amber.insane.MusicFile;
-import com.amber.insane.MusicType;
+import com.amber.insane.entity.MusicFile;
+import com.amber.insane.enums.MusicType;
 
 import java.util.List;
 import java.util.Map;

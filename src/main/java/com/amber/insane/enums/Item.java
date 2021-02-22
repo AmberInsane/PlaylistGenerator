@@ -1,4 +1,4 @@
-package com.amber.insane;
+package com.amber.insane.enums;
 
 public interface Item {
     String getName();
