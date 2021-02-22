@@ -6,6 +6,7 @@ import com.amber.insane.exceptions.FileManagerException;
 import com.amber.insane.enums.OrderStrategy;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -131,6 +132,10 @@ public class FileService {
         audioFiles = new HashMap<>();
         for (MusicType musicType : MusicType.values()) {
             File musicFolder = new File(MUSIC_FOLDER_PATH + musicType.folderPath);
+
+            if (!musicFolder.exists()) {
+                logAndThrowFileManagerException(String.format("Category folder %s is not found", MUSIC_FOLDER_PATH + musicType.folderPath));
+            }
             List<File> folderFiles = new ArrayList<>(Arrays.asList(Objects.requireNonNull(musicFolder.listFiles())));
 
             List<MusicFile> folderAudios = folderFiles.stream().map(MusicFile::new).collect(Collectors.toList());
@@ -146,7 +151,7 @@ public class FileService {
         if (!listFile.exists()) {
             logAndThrowFileManagerException("List of audio files not found");
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(listFile))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(listFile), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 logger.info(String.format("Reads line %s", line));
@@ -195,7 +200,7 @@ public class FileService {
             }
         }
 
-        try (FileWriter writer = new FileWriter(listFile)) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(listFile), StandardCharsets.UTF_8))) {
             audioFiles.forEach((key, value) -> {
                 int categoryNum = key.ordinal();
                 value.forEach(file -> {

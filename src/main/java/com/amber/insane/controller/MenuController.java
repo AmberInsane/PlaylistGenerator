@@ -118,6 +118,7 @@ public class MenuController {
      */
     private void sortFolders() {
         fileService.sortFolders();
+        System.out.println("Files were sorted successfully");
     }
 
     /**
@@ -126,5 +127,6 @@ public class MenuController {
     private void sortPlaylist() {
         OrderStrategy strategy = (OrderStrategy) getItem(OrderStrategy.values(), true);
         fileService.sortPlaylist(strategy);
+        System.out.println("Playlist was generated successfully");
     }
 }

@@ -137,7 +137,7 @@ public class SmartSorter implements ISorter {
 
                     if (leftDuration > firstColumnDuration) {
                         int prevColumnNum = (int) ((float) (leftDuration - firstColumnDuration)) / MATRIX_STEP;
-                        logger.debug("currentDuration " + currentDuration + " leftDuration " + leftDuration + " prevColumnNum " + prevColumnNum + " value " + arrayOfDurations[prevColumnNum]);
+                        //logger.debug("currentDuration " + currentDuration + " leftDuration " + leftDuration + " prevColumnNum " + prevColumnNum + " value " + arrayOfDurations[prevColumnNum]);
                         long prevMax = -1;
 
                         for (int k = 0; k < i; k++) {
